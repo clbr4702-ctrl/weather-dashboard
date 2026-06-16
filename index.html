@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Pogoda + Czas</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#050505;
+    color:white;
+    min-height:100vh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    display:flex;
+    justify-content:center;
+}
+
+/* ===== TŁO ===== */
+
+.bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+}
+
+.blob{
+    position:absolute;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.7;
+}
+
+.blob:nth-child(1){
+    background:#0066ff;
+    left:-100px;
+    top:-100px;
+    animation:float1 18s infinite alternate ease-in-out;
+}
+
+.blob:nth-child(2){
+    background:#7b2fff;
+    right:-100px;
+    top:100px;
+    animation:float2 22s infinite alternate ease-in-out;
+}
+
+.blob:nth-child(3){
+    background:#00d4ff;
+    bottom:-150px;
+    left:30%;
+    animation:float3 25s infinite alternate ease-in-out;
+}
+
+@keyframes float1{
+    from{transform:translate(0,0) scale(1);}
+    to{transform:translate(150px,100px) scale(1.3);}
+}
+
+@keyframes float2{
+    from{transform:translate(0,0) scale(1);}
+    to{transform:translate(-120px,120px) scale(1.25);}
+}
+
+@keyframes float3{
+    from{transform:translate(0,0) scale(1);}
+    to{transform:translate(80px,-80px) scale(1.35);}
+}
+
+/* ===== WRAPPER ===== */
+
+.wrapper{
+    z-index:10;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    padding:60px 20px;
+}
+
+/* ===== KARTA ===== */
+
+.card{
+    width:560px;
+    max-width:100%;
+    padding:40px;
+    border-radius:30px;
+
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:0 0 40px rgba(0,0,0,.4);
+
+    text-align:center;
+}
+
+/* ===== ZEGAR ===== */
+
+.clock{
+    font-size:clamp(3rem,10vw,5rem);
+    font-weight:700;
+}
+
+.date{
+    margin-top:10px;
+    opacity:.8;
+}
+
+/* ===== POGODA ===== */
+
+.weather{
+    margin-top:30px;
+    font-size:1.4rem;
+    min-height:60px;
+}
+
+/* ===== DROPDOWN ===== */
+
+.dropdown{
+    width:100%;
+    margin-top:25px;
+    position:relative;
+}
+
+.dropdown-button{
+    width:100%;
+    padding:14px 18px;
+
+    border-radius:14px;
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.15);
+
+    cursor:pointer;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.arrow{
+    transition:.3s;
+}
+
+.dropdown.open .arrow{
+    transform:rotate(180deg);
+}
+
+/* LISTA SCROLL */
+
+.dropdown-menu{
+    position:relative;
+    margin-top:10px;
+
+    max-height:220px;
+    overflow-y:auto;
+
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+
+    padding:10px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.15);
+
+    display:none;
+}
+
+.dropdown.open .dropdown-menu{
+    display:grid;
+}
+
+.dropdown-menu::-webkit-scrollbar{
+    width:8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,.25);
+    border-radius:999px;
+}
+
+.city{
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    text-align:center;
+}
+
+.city:hover{
+    background:rgba(255,255,255,.15);
+}
+
+/* ===== FOOTER ===== */
+
+.footer{
+    margin-top:20px;
+    opacity:.6;
+    font-size:.9rem;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="wrapper">
+<div class="card">
+
+    <div class="clock" id="clock">00:00:00</div>
+    <div class="date" id="date">Ładowanie...</div>
+
+    <div class="weather" id="weather">🌤️ Ładowanie pogody...</div>
+
+    <div class="dropdown" id="dropdown">
+
+        <div class="dropdown-button" id="dropdownButton">
+            <span id="selectedCity">Wolbrom</span>
+            <span class="arrow">▼</span>
+        </div>
+
+        <div class="dropdown-menu">
+
+            <div class="city">Wolbrom</div>
+            <div class="city">Warsaw</div>
+            <div class="city">Krakow</div>
+            <div class="city">Gdansk</div>
+            <div class="city">Wroclaw</div>
+            <div class="city">Poznan</div>
+            <div class="city">Katowice</div>
+            <div class="city">Lodz</div>
+            <div class="city">Lublin</div>
+            <div class="city">Szczecin</div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Europe / Warsaw
+    </div>
+
+</div>
+</div>
+
+<script>
+
+/* ===== CZAS ===== */
+
+function updateTime(){
+
+    const now = new Date();
+
+    document.getElementById("clock")
+    .textContent = now.toLocaleTimeString("pl-PL",{
+        timeZone:"Europe/Warsaw"
+    });
+
+    document.getElementById("date")
+    .textContent = now.toLocaleDateString("pl-PL",{
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+    });
+}
+
+updateTime();
+setInterval(updateTime,1000);
+
+/* ===== POGODA ===== */
+
+async function loadWeather(city){
+
+    const w = document.getElementById("weather");
+
+    try{
+        const res = await fetch(`https://wttr.in/${city}?format=j1`);
+        const data = await res.json();
+
+        const temp = data.current_condition[0].temp_C;
+        const desc = data.current_condition[0].weatherDesc[0].value;
+
+        w.innerHTML = `🌤️ ${city}<br>${temp}°C • ${desc}`;
+
+    }catch{
+        w.innerHTML = "❌ Błąd pogody";
+    }
+}
+
+/* ===== DROPDOWN ===== */
+
+const dropdown = document.getElementById("dropdown");
+const btn = document.getElementById("dropdownButton");
+const selected = document.getElementById("selectedCity");
+
+btn.onclick = () => dropdown.classList.toggle("open");
+
+document.querySelectorAll(".city").forEach(c=>{
+    c.onclick = () => {
+        selected.textContent = c.textContent;
+        dropdown.classList.remove("open");
+        loadWeather(c.textContent);
+    };
+});
+
+document.addEventListener("click",(e)=>{
+    if(!dropdown.contains(e.target)){
+        dropdown.classList.remove("open");
+    }
+});
+
+loadWeather("Wolbrom");
+
+</script>
+
+</body>
+</html>
